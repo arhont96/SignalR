@@ -132,6 +132,8 @@ export class HubConnection {
         this.callbacks.clear();
 
         this.closedCallbacks.forEach(c => c.apply(this, [error]));
+
+        this.cleanupTimeout();
     }
 
     async start(): Promise<void> {
@@ -158,9 +160,7 @@ export class HubConnection {
     }
 
     stop(): Promise<void> {
-        if (this.timeoutHandle) {
-            clearTimeout(this.timeoutHandle);
-        }
+        this.cleanupTimeout();
         return this.connection.stop();
     }
 
@@ -198,6 +198,8 @@ export class HubConnection {
 
         let message = this.protocol.writeMessage(invocationDescriptor);
 
+        this.logger.log(LogLevel.Trace, `Sending invocation: '${message}'`);
+
         this.connection.send(message)
             .catch(e => {
                 subject.error(e);
@@ -211,6 +213,8 @@ export class HubConnection {
         let invocationDescriptor = this.createInvocation(methodName, args, true);
 
         let message = this.protocol.writeMessage(invocationDescriptor);
+
+        this.logger.log(LogLevel.Trace, `Sending invocation: '${message}'`);
 
         return this.connection.send(message);
     }
@@ -239,6 +243,8 @@ export class HubConnection {
             });
 
             let message = this.protocol.writeMessage(invocationDescriptor);
+
+            this.logger.log(LogLevel.Trace, `Sending invocation: '${message}'`);
 
             this.connection.send(message)
                 .catch(e => {
@@ -282,6 +288,12 @@ export class HubConnection {
     onclose(callback: ConnectionClosed) {
         if (callback) {
             this.closedCallbacks.push(callback);
+        }
+    }
+
+    private cleanupTimeout(): void {
+        if (this.timeoutHandle) {
+            clearTimeout(this.timeoutHandle);
         }
     }
 

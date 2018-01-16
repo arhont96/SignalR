@@ -311,9 +311,12 @@ namespace Microsoft.AspNetCore.Sockets.Client.Internal
             _httpConnectionClosed(logger, null);
         }
 
-        public static void StartingTransport(this ILogger logger, string transport, Uri url)
+        public static void StartingTransport(this ILogger logger, ITransport transport, Uri url)
         {
-            _startingTransport(logger, transport, url, null);
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                _startingTransport(logger, transport.GetType().Name, url, null);
+            }
         }
 
         public static void RaiseConnected(this ILogger logger)
@@ -346,9 +349,12 @@ namespace Microsoft.AspNetCore.Sockets.Client.Internal
             _errorWithNegotiation(logger, url, exception);
         }
 
-        public static void ErrorStartingTransport(this ILogger logger, string transport, Exception exception)
+        public static void ErrorStartingTransport(this ILogger logger, ITransport transport, Exception exception)
         {
-            _errorStartingTransport(logger, transport, exception);
+            if (logger.IsEnabled(LogLevel.Error))
+            {
+                _errorStartingTransport(logger, transport.GetType().Name, exception);
+            }
         }
 
         public static void HttpReceiveStarted(this ILogger logger)
