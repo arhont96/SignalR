@@ -198,7 +198,7 @@ export class HubConnection {
 
         let message = this.protocol.writeMessage(invocationDescriptor);
 
-        this.logger.log(LogLevel.Trace, `Sending invocation: '${message}'`);
+        this.logger.log(LogLevel.Trace, `Sending invocation: '${message}'.`);
 
         this.connection.send(message)
             .catch(e => {
@@ -214,7 +214,7 @@ export class HubConnection {
 
         let message = this.protocol.writeMessage(invocationDescriptor);
 
-        this.logger.log(LogLevel.Trace, `Sending invocation: '${message}'`);
+        this.logger.log(LogLevel.Trace, `Sending invocation: '${message}'.`);
 
         return this.connection.send(message);
     }
@@ -244,7 +244,7 @@ export class HubConnection {
 
             let message = this.protocol.writeMessage(invocationDescriptor);
 
-            this.logger.log(LogLevel.Trace, `Sending invocation: '${message}'`);
+            this.logger.log(LogLevel.Trace, `Sending invocation: '${message}'.`);
 
             this.connection.send(message)
                 .catch(e => {
